@@ -6,6 +6,7 @@ import React from "react";
 
 export default function Home() {
   const { someValue } = useContextValue()
+  console.log(someValue)
   return (
     <div className="w-full">
       <NavBar />
