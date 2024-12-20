@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 const AppContext = createContext(null);
 
 const ContextProvider = ({ children }) => {
-    const [sideBarOpen, setSideBarOpen] = useState(true)
+    const [sideBarOpen, setSideBarOpen] = useState(false)
 
     const toggleSideBar = () => {
         setSideBarOpen(!sideBarOpen)
