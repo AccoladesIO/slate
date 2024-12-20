@@ -1,10 +1,13 @@
+import Layout from '@/components/Layout/Layout'
 import React from 'react'
 
 const Teams = () => {
     return (
-        <div className='w-full'>
-            Teams
-        </div>
+        <Layout active="Teams">
+            <div className='w-full'>
+                Teams
+            </div>
+        </Layout>
     )
 }
 
