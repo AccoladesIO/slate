@@ -51,7 +51,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
 
   return (
     <motion.div
-      className="h-[100vh] w-full max-w-[300px] absolute bg-white text-white"
+      className="h-[100vh] w-full max-w-[300px] absolute bg-white text-white shadow-md z-20"
       initial="closed"
       animate="open"
       exit="closed"
@@ -67,7 +67,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
         <ul className="space-y-4">
           {sideLink.map((_link, i) => (
             <div key={_link.id + _link.name + i} className={`w-full px-4 py-2 ${active === _link.name ? ' text-purple-500 font-bold border-r-4 border-r-purple-800' : "bg-white text-black/50"} hover:bg-slate-300`}>
-              <Link href={_link.href} prefetch={false} className='w-full flex items-center justify-start gap-2 text-xs'>
+              <Link href={_link.href} prefetch={false} className='w-full flex items-center justify-start gap-2 text-xs' onClick={toggleSideBar}>
                 {/* {_link.icon} */}
                 {_link.name}
               </Link>

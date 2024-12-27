@@ -3,13 +3,21 @@ const AppContext = createContext(null);
 
 const ContextProvider = ({ children }) => {
     const [sideBarOpen, setSideBarOpen] = useState(false)
+    const [isOpen, setIsOpen] = useState(false);
+    
+        const handleToggle = () => {
+            setIsOpen(!isOpen);
+        };
 
     const toggleSideBar = () => {
         setSideBarOpen(!sideBarOpen)
     }
     const contextValue = {
         sideBarOpen,
-        toggleSideBar
+        toggleSideBar,
+        isOpen,
+        setIsOpen,
+        handleToggle,
     };
 
     return (
