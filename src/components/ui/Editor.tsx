@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import RawTool from '@editorjs/raw';
 import Header from '@editorjs/header';
@@ -9,13 +9,31 @@ import Quote from '@editorjs/quote';
 import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
 import CodeTool from '@editorjs/code';
+import type EditorJS from '@editorjs/editorjs';
+
+// Define interfaces for our data structure
+interface EditorBlock {
+    data: {
+        text?: string;
+        level: number;
+    };
+    id: string;
+    type: string;
+}
+
+interface EditorData {
+    time: number;
+    blocks: EditorBlock[];
+    version: string;
+}
 
 // Define the Editor component separately
 const EditorComponent = () => {
-    const editorInstance = useRef<any>(null);
+    // Use proper typing for the editor instance
+    const editorInstance = useRef<EditorJS | null>(null);
 
     // Raw data for EditorJS initialization
-    const rawDocument = {
+    const rawDocument: EditorData = {
         "time": 1550476186479,
         "blocks": [{
             data: {
@@ -35,84 +53,82 @@ const EditorComponent = () => {
         "version": "2.8.1"
     };
 
-    // const [editorData, setEditorData] = useState(rawDocument);
+    // Move initialization logic to a callback to properly handle dependencies
+    const initializeEditor = useCallback(async () => {
+        const EditorJS = (await import('@editorjs/editorjs')).default;
+
+        if (!editorInstance.current) {
+            editorInstance.current = new EditorJS({
+                autofocus: true,
+                data: rawDocument,
+                holder: 'editorjs',
+                tools: {
+                    image: SimpleImage,
+                    quote: {
+                        class: Quote,
+                        inlineToolbar: true,
+                        shortcut: 'CMD+SHIFT+O',
+                        config: {
+                            quotePlaceholder: 'Enter a quote',
+                            captionPlaceholder: "Quote's author",
+                        },
+                    },
+                    paragraph: {
+                        class: Paragraph,
+                        inlineToolbar: true,
+                    },
+                    table: {
+                        class: Table,
+                        inlineToolbar: true,
+                        config: {
+                            rows: 2,
+                            cols: 3,
+                            maxRows: 10,
+                            maxCols: 10,
+                        },
+                    },
+                    list: {
+                        class: EditorjsList,
+                        inlineToolbar: true,
+                        config: {
+                            defaultStyle: 'unordered',
+                        },
+                    },
+                    embed: {
+                        class: Embed,
+                        config: {
+                            services: {
+                                youtube: true,
+                                coub: true,
+                            },
+                        },
+                    },
+                    header: {
+                        class: Header,
+                        config: {
+                            placeholder: 'Enter a header',
+                            shortcut: 'CMD+SHIFT+H',
+                            levels: [1, 2, 3],
+                            defaultLevel: 3,
+                        },
+                    },
+                    raw: RawTool,
+                    code: CodeTool,
+                },
+            });
+        }
+    }, [rawDocument]);
 
     useEffect(() => {
-        const initializeEditor = async () => {
-            const EditorJS = (await import('@editorjs/editorjs')).default;
-
-            if (!editorInstance.current) {
-                editorInstance.current = new EditorJS({
-                    autofocus: true,
-                    data: rawDocument,
-                    holder: 'editorjs',
-                    tools: {
-                        image: SimpleImage,
-                        quote: {
-                            class: Quote,
-                            inlineToolbar: true,
-                            shortcut: 'CMD+SHIFT+O',
-                            config: {
-                                quotePlaceholder: 'Enter a quote',
-                                captionPlaceholder: "Quote's author",
-                            },
-                        },
-                        paragraph: {
-                            class: Paragraph,
-                            inlineToolbar: true,
-                        },
-                        table: {
-                            class: Table,
-                            inlineToolbar: true,
-                            config: {
-                                rows: 2,
-                                cols: 3,
-                                maxRows: 10,
-                                maxCols: 10,
-                            },
-                        },
-                        list: {
-                            class: EditorjsList,
-                            inlineToolbar: true,
-                            config: {
-                                defaultStyle: 'unordered',
-                            },
-                        },
-                        embed: {
-                            class: Embed,
-                            config: {
-                                services: {
-                                    youtube: true,
-                                    coub: true,
-                                },
-                            },
-                        },
-                        header: {
-                            class: Header,
-                            config: {
-                                placeholder: 'Enter a header',
-                                shortcut: 'CMD+SHIFT+H',
-                                levels: [1, 2, 3],
-                                defaultLevel: 3,
-                            },
-                        },
-                        raw: RawTool,
-                        code: CodeTool,
-                    },
-                });
-            }
-        };
-
         initializeEditor();
 
-        // Cleanup
         return () => {
             if (editorInstance.current) {
                 editorInstance.current.destroy();
                 editorInstance.current = null;
             }
         };
-    }, []); // Empty dependency array since we only want to initialize once
+    }, [initializeEditor]); // Now correctly depends on initializeEditor
 
     return (
         <div className="w-full h-full p-4 overflow-y-scroll custom-scrollbar" id="editorjs" />
