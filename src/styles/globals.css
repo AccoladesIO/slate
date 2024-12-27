@@ -15,3 +15,43 @@ html{
   font-weight: 400;
   font-style: normal;
 }
+
+
+h1.ce-header{
+  @apply text-2xl font-bold
+}
+h2.ce-header{
+  @apply text-xl font-semibold
+}
+h3.ce-header{
+  @apply text-lg font-normal
+}
+h4.ce-header{
+  @apply text-base font-normal
+}
+h5.ce-header{
+  @apply text-sm font-light
+}
+h6.ce-header{
+  @apply text-xs font-extralight
+}
+ 
+
+@layer components{
+    .custom-scrollbar::-webkit-scrollbar{
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb{
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb{
+        background-color: #a5b4fc;
+        width:5px;
+        border-radius: 10px;
+        -webkit-border-radius: 10px;
+        -moz-border-radius: 10px;
+        -ms-border-radius: 10px;
+        -o-border-radius: 10px;
+}
+
+}
