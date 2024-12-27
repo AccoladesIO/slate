@@ -1,9 +1,9 @@
 import { useContextValue } from '@/utils/hooks/Context';
-import React, { useState } from 'react';
+import React from 'react';
 import { PiDotsThreeBold } from 'react-icons/pi';
 
 const DropdownMenu = () => {
-    const { isOpen, setIsOpen, handleToggle } = useContextValue()
+    const { isOpen,  handleToggle } = useContextValue()
 
     const handleOptionClick = (option: string) => {
         console.log(`${option} clicked`);

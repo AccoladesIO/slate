@@ -1,6 +1,7 @@
 import Layout from '@/components/Layout/Layout'
 import DropdownMenu from '@/components/ui/Dropdown'
 import Editor from '@/components/ui/Editor'
+import Slate from '@/components/ui/Slate'
 import { useContextValue } from '@/utils/hooks/Context'
 import React from 'react'
 
@@ -15,11 +16,11 @@ const SingleCanvas = () => {
                         <DropdownMenu />
                     </div>
                 </div>
-                <div className='w-full grid h-[600px] grid-cols-2 gap-2 p-4'>
+                <div className='w-full grid h-[800px] grid-cols-2'>
                     <div className='w-full h-full border-black/15 border bg-white'>
                         <Editor />
                     </div>
-                    <div className='w-full h-full border-black/15 border bg-white'>Canvas</div>
+                    <div className='w-full h-full border-black/15 border bg-white'><Slate /></div>
                 </div>
             </div>
         </Layout>
