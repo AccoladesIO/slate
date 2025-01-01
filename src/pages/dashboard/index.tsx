@@ -9,8 +9,8 @@ const Dashboard = () => {
             <div className='w-full'>
                 <div className='w-full min-h-[200px] bg-purple-100 items-center justify-center'>
                     <div className="flex flex-col sm:flex-row w-full p-3 justify-center items-center gap-4 min-h-[200px]">
-                        <div className="w-full bg-white rounded-lg shadow-md h-[130px] flex flex-col items-center justify-center text-xs text-black/65 hover:text-black"><IoAddOutline size={40} /> <span className='w-full inline-block text-center'>Create Slate</span> </div>
-                        <div className="w-full bg-white rounded-lg shadow-md h-[130px] flex flex-col items-center justify-center text-xs text-black/65 hover:text-black"><GiBookshelf size={40} /> <span className='w-full inline-block text-center'>Browse Presentations</span> </div>
+                        <div className="w-full bg-white rounded-lg shadow-md h-[130px] flex flex-col items-center justify-center text-xs text-black/65 hover:text-black"><IoAddOutline size={40} /> <span className='w-full inline-block text-center'>Create Team</span> </div>
+                        <div className="w-full bg-white rounded-lg shadow-md h-[130px] flex flex-col items-center justify-center text-xs text-black/65 hover:text-black"><GiBookshelf size={40} /> <span className='w-full inline-block text-center'>Browse Archive</span> </div>
                         <div className="w-full bg-white rounded-lg shadow-md h-[130px] flex flex-col items-center justify-center text-xs text-black/65 hover:text-black"><IoPeopleOutline size={40} /> <span className='w-full inline-block text-center'>View Collaborations</span> </div>
                     </div>
                 </div>
