@@ -6,7 +6,6 @@ const HeroSection: React.FC = () => {
       style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/017/033/097/original/simple-abstract-background-design-suitable-for-ppt-backgrounds-and-others-free-vector.jpg')" }}>
       {/* Overlay */}
       <div className="absolute inset-0 bg-purple-500 bg-opacity-30"></div>
-
       {/* Content */}
       <div className="relative flex flex-col items-center justify-center h-full text-center text-white px-4 max-w-[800px] mx-auto w-full">
         <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
