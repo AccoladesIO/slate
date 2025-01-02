@@ -20,7 +20,7 @@ const Layout: React.FC<LayoutProp> = ({ children, active }) => {
             <div className="w-full sm:mb-0 mb-10">
                 <Header />
                 {children}
-            </div>
+            </div> 
         </div>
     );
 };
