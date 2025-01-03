@@ -72,7 +72,7 @@ const LoginPage: React.FC = () => {
                         Login
                     </button>
                     <span className='w-full text-xs text-purple-700 cursor-pointer' onClick={() => router.push('/auth/signup/')}>
-                        Don't have an Account?
+                        Don&apos;t have an Account?
                     </span>
                     <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
                         Forgot Password?
