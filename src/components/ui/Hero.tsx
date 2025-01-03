@@ -1,6 +1,8 @@
 import React from "react";
+import { useRouter } from "next/router";
 
 const HeroSection: React.FC = () => {
+  const router = useRouter()
   return (
     <div className="relative h-screen bg-cover bg-center"
       style={{ backgroundImage: "url('https://static.vecteezy.com/system/resources/previews/017/033/097/original/simple-abstract-background-design-suitable-for-ppt-backgrounds-and-others-free-vector.jpg')" }}>
@@ -19,7 +21,7 @@ const HeroSection: React.FC = () => {
           Sketch, share, and collaborate with your team in real time, no matter where you are. Experience the future of teamwork today.
         </p>
         <div className="space-x-4 space-y-4">
-          <button className="px-6 text-sm py-3 bg-white text-purple-500 font-semibold rounded-md shadow-md hover:bg-purple-100 transition outline-none">
+          <button className="px-6 text-sm py-3 bg-white text-purple-500 font-semibold rounded-md shadow-md hover:bg-purple-100 transition outline-none" onClick={() => router.push('/auth/login/')}>
             Get Started for Free
           </button>
           <button className="px-6 py-3 text-sm bg-purple-700 text-white font-semibold rounded-md shadow-md hover:bg-purple-600 transition outline-none">

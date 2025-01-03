@@ -1,6 +1,8 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 
 const LoginPage: React.FC = () => {
+    const router = useRouter()
     return (
         <div className="h-screen md:flex">
             {/* Left Section */}
@@ -24,48 +26,6 @@ const LoginPage: React.FC = () => {
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-5 w-5 text-gray-400"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
-                        <input
-                            className="pl-2 outline-none border-none bg-transparent"
-                            type="text"
-                            name="fullname"
-                            placeholder="Full name"
-                        />
-                    </div>
-                    <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-400"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"
-                            />
-                        </svg>
-                        <input
-                            className="pl-2 outline-none border-none"
-                            type="text"
-                            name="username"
-                            placeholder="Username"
-                        />
-                    </div>
-                    <div className="flex items-center border-2 py-2 px-3 rounded-2xl mb-4">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 text-gray-400"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -78,7 +38,7 @@ const LoginPage: React.FC = () => {
                             />
                         </svg>
                         <input
-                            className="pl-2 outline-none border-none"
+                            className="pl-2 outline-none border-none text-sm"
                             type="email"
                             name="email"
                             placeholder="Email Address"
@@ -98,13 +58,12 @@ const LoginPage: React.FC = () => {
                             />
                         </svg>
                         <input
-                            className="pl-2 outline-none border-none"
+                            className="pl-2 outline-none border-none text-sm"
                             type="password"
                             name="password"
                             placeholder="Password"
                         />
                     </div>
-
                     {/* Submit Button */}
                     <button
                         type="submit"
@@ -112,6 +71,9 @@ const LoginPage: React.FC = () => {
                     >
                         Login
                     </button>
+                    <span className='w-full text-xs text-purple-700 cursor-pointer' onClick={() => router.push('/auth/signup/')}>
+                        Don&apos;t have an Account?
+                    </span>
                     <span className="text-sm ml-2 hover:text-blue-500 cursor-pointer">
                         Forgot Password?
                     </span>

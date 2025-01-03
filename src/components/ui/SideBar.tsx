@@ -19,19 +19,11 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
       id: 1,
       name: "Dashboard",
       href: "/dashboard",
-      // icon: <RxHome />
-    },
-    {
-      id: 2,
-      name: "Canvas",
-      href: "/dashboard/canvas",
-      // icon: <RxFile />
     },
     {
       id: 3,
       name: "Teams",
       href: "/dashboard/teams",
-      // icon: <BiStar />
     }
   ]
 
@@ -63,7 +55,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
           <IoCloseOutline size={20} />
         </span>
       </div>
-      <nav className="p-4">
+      <nav className="p-4 flex flex-col justify-between h-[94vh]">
         <ul className="space-y-4">
           {sideLink.map((_link, i) => (
             <div key={_link.id + _link.name + i} className={`w-full px-4 py-2 ${active === _link.name ? ' text-purple-500 font-bold border-r-4 border-r-purple-800' : "bg-white text-black/50"} hover:bg-slate-300`}>
@@ -74,6 +66,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
             </div>
           ))}
         </ul>
+        <div className="w-full  text-purple-700 border-r-4 bg-purple-200 p-2 border-r-purple-800">Logout</div>
       </nav>
     </motion.div>
   );
