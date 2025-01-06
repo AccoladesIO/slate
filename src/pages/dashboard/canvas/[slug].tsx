@@ -4,14 +4,17 @@ import Editor from '@/components/ui/Editor'
 import Slate from '@/components/ui/Slate'
 import { useContextValue } from '@/utils/hooks/Context'
 import React from 'react'
+import { useRouter } from 'next/router'
 
 const SingleCanvas = () => {
+    const router = useRouter()
+    const { slug } = router.query
     const { handleToggle } = useContextValue()
     return (
         <Layout active='Canvas'>
             <div className='w-full'>
                 <div className='flex items-center justify-between p-4'>
-                    <h2 className='w-full text-sm text-black/50'>Project Title</h2>
+                    <h2 className='w-full text-sm text-black/50'>Project Title {slug}</h2>
                     <div className='flex flex-col items-center justify-center text-purple-600' onClick={handleToggle}>
                         <DropdownMenu />
                     </div>
