@@ -38,7 +38,6 @@ const Teams = () => {
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 p-4 gap-4">
                 <div
                     className="w-full h-[200px] border flex flex-col items-center justify-center text-xs text-black/65 hover:text-black bg-white"
-                    onClick={() => router.push('/dashboard/teams/create')}
                 >
                     <IoAddOutline size={40} />
                     <span className="w-full inline-block text-center">Create Team</span>

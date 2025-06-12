@@ -123,7 +123,7 @@ const EditorComponent = () => {
         initializeEditor();
 
         return () => {
-            if (editorInstance.current) {
+            if (editorInstance.current && typeof editorInstance.current.destroy === 'function') {
                 editorInstance.current.destroy();
                 editorInstance.current = null;
             }
