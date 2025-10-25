@@ -9,133 +9,91 @@ import Quote from '@editorjs/quote';
 import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
 import CodeTool from '@editorjs/code';
-import type EditorJS from '@editorjs/editorjs';
+import { useContextValue } from '@/utils/hooks/Context'; // ✅ import global context
+import EditorJS from '@editorjs/editorjs';
 
-// Define interfaces for our data structure
-interface EditorBlock {
-    data: {
-        text?: string;
-        level: number;
-    };
-    id: string;
-    type: string;
-}
-
-interface EditorData {
-    time: number;
-    blocks: EditorBlock[];
-    version: string;
-}
-
-// Define the Editor component separately
 const EditorComponent = () => {
-    // Use proper typing for the editor instance
-    const editorInstance = useRef<EditorJS | null>(null);
+  const { editorRef } = useContextValue() as { editorRef: React.MutableRefObject<EditorJS | null> }; // ✅ use global ref
 
-    // Raw data for EditorJS initialization
-    const rawDocument: EditorData = {
-        "time": 1550476186479,
-        "blocks": [{
-            data: {
-                text: 'Document Name',
-                level: 2
+  const rawDocument = {
+    time: 1550476186479,
+    blocks: [
+      {
+        data: { text: 'Document Name', level: 1 },
+        id: '123',
+        type: 'header',
+      },
+      {
+        data: { level: 4 },
+        id: '1234',
+        type: 'header',
+      },
+    ],
+    version: '2.8.1',
+  };
+
+  const initializeEditor = useCallback(async () => {
+    const EditorJS = (await import('@editorjs/editorjs')).default;
+
+    if (!editorRef.current) {
+      editorRef.current = new EditorJS({
+        autofocus: true,
+        data: rawDocument,
+        holder: 'editorjs',
+        tools: {
+          image: SimpleImage,
+          quote: {
+            class: Quote,
+            inlineToolbar: true,
+            shortcut: 'CMD+SHIFT+O',
+            config: {
+              quotePlaceholder: 'Enter a quote',
+              captionPlaceholder: "Quote's author",
             },
-            id: "123",
-            type: 'header'
+          },
+          paragraph: { class: Paragraph, inlineToolbar: true },
+          table: {
+            class: Table,
+            inlineToolbar: true,
+            config: { rows: 2, cols: 3, maxRows: 10, maxCols: 10 },
+          },
+          list: {
+            class: EditorjsList,
+            inlineToolbar: true,
+            config: { defaultStyle: 'unordered' },
+          },
+          embed: {
+            class: Embed,
+            config: { services: { youtube: true, coub: true } },
+          },
+          header: {
+            class: Header,
+            config: {
+              placeholder: 'Enter a header',
+              shortcut: 'CMD+SHIFT+H',
+              levels: [1, 2, 3, 4],
+              defaultLevel: 3,
+            },
+          },
+          raw: RawTool,
+          code: CodeTool,
         },
-        {
-            data: {
-                level: 4
-            },
-            id: "1234",
-            type: 'header'
-        }],
-        "version": "2.8.1"
+      });
+    }
+  }, [editorRef, rawDocument]);
+
+  useEffect(() => {
+    initializeEditor();
+    return () => {
+      if (editorRef.current && typeof editorRef.current.destroy === 'function') {
+        editorRef.current.destroy();
+        editorRef.current = null;
+      }
     };
+  }, [initializeEditor]);
 
-    // Move initialization logic to a callback to properly handle dependencies
-    const initializeEditor = useCallback(async () => {
-        const EditorJS = (await import('@editorjs/editorjs')).default;
-
-        if (!editorInstance.current) {
-            editorInstance.current = new EditorJS({
-                autofocus: true,
-                data: rawDocument,
-                holder: 'editorjs',
-                tools: {
-                    image: SimpleImage,
-                    quote: {
-                        class: Quote,
-                        inlineToolbar: true,
-                        shortcut: 'CMD+SHIFT+O',
-                        config: {
-                            quotePlaceholder: 'Enter a quote',
-                            captionPlaceholder: "Quote's author",
-                        },
-                    },
-                    paragraph: {
-                        class: Paragraph,
-                        inlineToolbar: true,
-                    },
-                    table: {
-                        class: Table,
-                        inlineToolbar: true,
-                        config: {
-                            rows: 2,
-                            cols: 3,
-                            maxRows: 10,
-                            maxCols: 10,
-                        },
-                    },
-                    list: {
-                        class: EditorjsList,
-                        inlineToolbar: true,
-                        config: {
-                            defaultStyle: 'unordered',
-                        },
-                    },
-                    embed: {
-                        class: Embed,
-                        config: {
-                            services: {
-                                youtube: true,
-                                coub: true,
-                            },
-                        },
-                    },
-                    header: {
-                        class: Header,
-                        config: {
-                            placeholder: 'Enter a header',
-                            shortcut: 'CMD+SHIFT+H',
-                            levels: [1, 2, 3],
-                            defaultLevel: 3,
-                        },
-                    },
-                    raw: RawTool,
-                    code: CodeTool,
-                },
-            });
-        }
-    }, [rawDocument]);
-
-    useEffect(() => {
-        initializeEditor();
-
-        return () => {
-            if (editorInstance.current && typeof editorInstance.current.destroy === 'function') {
-                editorInstance.current.destroy();
-                editorInstance.current = null;
-            }
-        };
-    }, [initializeEditor]); // Now correctly depends on initializeEditor
-
-    return (
-        <div className="w-full h-full p-4 overflow-y-scroll custom-scrollbar" id="editorjs" />
-    );
+  return <div className="w-full h-full p-4 overflow-y-scroll" id="editorjs" />;
 };
 
-// Use dynamic import properly
 const Editor = dynamic(() => Promise.resolve(EditorComponent), { ssr: false });
-
 export default Editor;
