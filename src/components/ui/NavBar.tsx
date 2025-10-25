@@ -1,16 +1,26 @@
-import React from 'react';
-import Logo from './Logo';
-import { useRouter } from 'next/router';
+"use client"
+import Logo from "./Logo"
+import { useRouter } from "next/navigation"
 
 const NavBar = () => {
   const router = useRouter()
 
   return (
-    <div className="w-[95%] max-w-[1200px] mx-auto p-3 rounded-lg fixed top-2 left-0 right-0 bg-white shadow-md flex items-center justify-between z-20">
-      <Logo />
-      <div className=' flex items-center justify-end bg-purple-500 text-white p-2 rounded-md text-sm cursor-pointer' onClick={() => router.push('/auth/login')}>Join for free</div>
-    </div>
-  );
-};
+    <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+      <div className="w-full max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="animate-fade-in">
+          <Logo />
+        </div>
 
-export default NavBar;
+        <button
+          onClick={() => router.push("/auth/login")}
+          className="px-6 py-2.5 bg-gradient-to-r from-primary to-accent text-primary-foreground font-medium rounded-full text-sm transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95"
+        >
+          Join for free
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default NavBar

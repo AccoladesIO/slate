@@ -3,16 +3,28 @@ import React from 'react';
 import { PiDotsThreeBold } from 'react-icons/pi';
 
 const DropdownMenu = () => {
-    const { isOpen, handleToggle } = useContextValue()
+    const { isOpen, handleToggle, handleSave }: { isOpen: boolean; handleToggle: () => void; handleSave: () => void } = useContextValue()
 
     const handleOptionClick = (option: string) => {
         console.log(`${option} clicked`);
         // setIsOpen(false);
         // Add functionality for each option here
+        if(option === "Save"){
+            handleSave()
+        }
+        if(option === "Share"){
+
+        }
+        if(option === "View Collaborators"){
+
+        }
+        if(option === "Delete"){
+
+        }
     };
 
     return (
-        <div className="relative inline-block text-left z-20">
+        <div className="relative inline-block text-left z-[9999]">
             {/* Dropdown Trigger */}
             <div className='flex flex-col items-center justify-center w-10 h-8 text-purple-600 font-bold' onClick={handleToggle}>
                 <PiDotsThreeBold size={20} />
