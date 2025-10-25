@@ -1,7 +1,6 @@
 import Layout from '@/components/Layout/Layout';
 import Editor from '@/components/ui/Editor';
 import Slate from '@/components/ui/Slate';
-import { useContextValue } from '@/utils/hooks/Context';
 import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import ActionIconsBar from '@/components/ui/ActionIconsBar';
