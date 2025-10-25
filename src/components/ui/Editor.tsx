@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import RawTool from '@editorjs/raw';
 import Header from '@editorjs/header';

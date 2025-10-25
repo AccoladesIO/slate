@@ -56,7 +56,7 @@ const AddProjectForm: React.FC<AddProjectFormProps> = ({ onClose }) => {
               Project Created
             </h3>
             <p className="text-sm font-light" style={{ color: "oklch(0.556 0 0)" }}>
-              Your project "{title}" has been created successfully.
+              Your project has been created successfully.
             </p>
           </div>
         ) : (

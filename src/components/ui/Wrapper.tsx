@@ -1,5 +1,4 @@
 "use client";
-import { useEffect } from "react";
 import { Excalidraw, MainMenu } from "@excalidraw/excalidraw";
 import { useContextValue } from "@/utils/hooks/Context";
 import { type ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";

@@ -1,5 +1,4 @@
 import Layout from '@/components/Layout/Layout';
-import DropdownMenu from '@/components/ui/Dropdown';
 import Editor from '@/components/ui/Editor';
 import Slate from '@/components/ui/Slate';
 import { useContextValue } from '@/utils/hooks/Context';
@@ -10,7 +9,6 @@ import ActionIconsBar from '@/components/ui/ActionIconsBar';
 const SingleCanvas = () => {
   const router = useRouter();
   const { slug } = router.query;
-  const { handleToggle } = useContextValue();
   const [leftWidth, setLeftWidth] = useState(50);
   const resizerRef = useRef<HTMLDivElement | null>(null);
   let isResizing = false;
