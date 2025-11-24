@@ -1,7 +1,7 @@
 import Footer from "@/components/ui/Footer";
 import HeroSection from "@/components/ui/Hero";
 import NavBar from "@/components/ui/NavBar";
-import { useContextValue } from "@/utils/hooks/Context";
+import { useContextValue } from "@/context/Context";
 import React from "react";
 
 export default function Home() {
@@ -13,5 +13,5 @@ export default function Home() {
       <HeroSection />
       <Footer />
     </div>
-  );
+  ); 
 }

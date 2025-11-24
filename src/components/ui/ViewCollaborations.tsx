@@ -1,104 +1,130 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { MdRemove } from "react-icons/md"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useContextValue } from "@/context/Context"
 
-interface Collaborator {
+interface User {
   id: string
   name: string
   email: string
-  role: "Admin" | "Editor" | "Viewer"
-  joinedDate: string
 }
 
-interface CollaborationGroup {
+interface Presentation {
+  id: string
+  title: string
+  description: string
+  isPublic: boolean
+  createdAt: string
+  updatedAt: string
+  user: User
+}
+
+interface Share {
+  id: string
+  presentationId: string
+  sharedWithUserId: string
+  accessLevel: "read" | "write"
+  sharedByUserId: string
+  createdAt: string
+  updatedAt: string
+  presentation: Presentation
+}
+
+interface ShareGroup {
   period: string
-  collaborators: Collaborator[]
+  shares: Share[]
 }
 
 const ViewCollaborations: React.FC = () => {
   const [filterPeriod, setFilterPeriod] = useState<"all" | "7d" | "14d" | "30d">("all")
+  const [shares, setShares] = useState<Share[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [forkingId, setForkingId] = useState<string | null>(null)
 
-  const allCollaborations: CollaborationGroup[] = [
-    {
-      period: "Last 7 days",
-      collaborators: [
-        {
-          id: "1",
-          name: "Sarah Johnson",
-          email: "sarah@example.com",
-          role: "Editor",
-          joinedDate: "2024-10-20",
-        },
-        {
-          id: "2",
-          name: "Mike Chen",
-          email: "mike@example.com",
-          role: "Viewer",
-          joinedDate: "2024-10-18",
-        },
-      ],
-    },
-    {
-      period: "Last 14 days",
-      collaborators: [
-        {
-          id: "3",
-          name: "Emma Davis",
-          email: "emma@example.com",
-          role: "Admin",
-          joinedDate: "2024-10-12",
-        },
-      ],
-    },
-    {
-      period: "Last 30 days",
-      collaborators: [
-        {
-          id: "4",
-          name: "Alex Rodriguez",
-          email: "alex@example.com",
-          role: "Editor",
-          joinedDate: "2024-10-01",
-        },
-      ],
-    },
-    {
-      period: "Earlier",
-      collaborators: [
-        {
-          id: "5",
-          name: "Lisa Wang",
-          email: "lisa@example.com",
-          role: "Viewer",
-          joinedDate: "2024-08-15",
-        },
-        {
-          id: "6",
-          name: "James Wilson",
-          email: "james@example.com",
-          role: "Editor",
-          joinedDate: "2024-07-20",
-        },
-      ],
-    },
-  ]
+  const router = useRouter()
+  const { duplicatePresentation } = useContextValue()
 
-  const getRoleColor = (role: string) => {
-    switch (role) {
-      case "Admin":
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+
+  useEffect(() => {
+    fetchShares()
+  }, [])
+
+  const fetchShares = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const response = await fetch(`${baseUrl}/sharing/shared-with-me`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch shared presentations")
+      }
+
+      const result = await response.json()
+      if (result.success && result.data.shares) {
+        setShares(result.data.shares)
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getRoleColor = (accessLevel: string) => {
+    switch (accessLevel) {
+      case "write":
         return "oklch(0.45 0.18 300)"
-      case "Editor":
-        return "oklch(0.65 0.25 330)"
+      case "read":
+        return "oklch(0.556 0 0)"
       default:
         return "oklch(0.556 0 0)"
     }
   }
 
-  const getFilteredCollaborations = () => {
+  const getRoleLabel = (accessLevel: string) => {
+    return accessLevel === "write" ? "Editor" : "Viewer"
+  }
+
+  const groupSharesByPeriod = (shares: Share[]): ShareGroup[] => {
+    const now = new Date()
+    const groups: ShareGroup[] = [
+      { period: "Last 7 days", shares: [] },
+      { period: "Last 14 days", shares: [] },
+      { period: "Last 30 days", shares: [] },
+      { period: "Earlier", shares: [] },
+    ]
+
+    shares.forEach((share) => {
+      const createdDate = new Date(share.createdAt)
+      const daysDiff = Math.floor((now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24))
+
+      if (daysDiff <= 7) {
+        groups[0].shares.push(share)
+      } else if (daysDiff <= 14) {
+        groups[1].shares.push(share)
+      } else if (daysDiff <= 30) {
+        groups[2].shares.push(share)
+      } else {
+        groups[3].shares.push(share)
+      }
+    })
+
+    return groups.filter((group) => group.shares.length > 0)
+  }
+
+  const getFilteredShares = () => {
     if (filterPeriod === "all") {
-      return allCollaborations
+      return groupSharesByPeriod(shares)
     }
 
     const daysMap = {
@@ -111,18 +137,81 @@ const ViewCollaborations: React.FC = () => {
     const cutoffDate = new Date()
     cutoffDate.setDate(cutoffDate.getDate() - days)
 
-    return allCollaborations
-      .map((group) => ({
-        ...group,
-        collaborators: group.collaborators.filter((collab) => {
-          const joinDate = new Date(collab.joinedDate)
-          return joinDate >= cutoffDate
-        }),
-      }))
-      .filter((group) => group.collaborators.length > 0)
+    const filteredShares = shares.filter((share) => {
+      const createdDate = new Date(share.createdAt)
+      return createdDate >= cutoffDate
+    })
+
+    return groupSharesByPeriod(filteredShares)
   }
 
-  const filteredData = getFilteredCollaborations()
+  const handlePresentationClick = (presentationId: string) => {
+    router.push(`/dashboard/canvas/${presentationId}`)
+  }
+
+  const handleForkPresentation = async (e: React.MouseEvent, presentationId: string) => {
+    e.stopPropagation()
+    
+    try {
+      setForkingId(presentationId)
+      // ensure duplicatePresentation is callable at runtime and cast it to a function for TypeScript
+      if (typeof duplicatePresentation !== "function") {
+        throw new Error("duplicatePresentation is not available")
+      }
+      await (duplicatePresentation as unknown as (id: string) => Promise<void>)(presentationId)
+    } catch (err) {
+      console.error("Failed to fork presentation:", err)
+      alert("Failed to fork presentation. Please try again.")
+    } finally {
+      setForkingId(null)
+    }
+  }
+
+  const filteredData = getFilteredShares()
+
+  if (loading) {
+    return (
+      <div className="w-full">
+        <div
+          className="rounded-lg p-8"
+          style={{ backgroundColor: "white", border: "1px solid", borderColor: "oklch(0.92 0.01 70)" }}
+        >
+          <div className="text-center py-12">
+            <p className="text-sm font-light" style={{ color: "oklch(0.556 0 0)" }}>
+              Loading shared presentations...
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="w-full">
+        <div
+          className="rounded-lg p-8"
+          style={{ backgroundColor: "white", border: "1px solid", borderColor: "oklch(0.92 0.01 70)" }}
+        >
+          <div className="text-center py-12">
+            <p className="text-sm font-light" style={{ color: "oklch(0.577 0.245 27.325)" }}>
+              Error: {error}
+            </p>
+            <button
+              onClick={fetchShares}
+              className="mt-4 px-4 py-2 rounded-lg font-medium text-sm"
+              style={{
+                backgroundColor: "oklch(0.45 0.18 300)",
+                color: "white",
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="w-full">
@@ -133,10 +222,10 @@ const ViewCollaborations: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
           <div>
             <h2 className="text-3xl font-light tracking-tight mb-2" style={{ color: "oklch(0.145 0 0)" }}>
-              Collaborations
+              Shared With Me
             </h2>
             <p className="text-sm font-light" style={{ color: "oklch(0.556 0 0)" }}>
-              Manage your team members and their permissions
+              Presentations that others have shared with you
             </p>
           </div>
 
@@ -160,7 +249,7 @@ const ViewCollaborations: React.FC = () => {
           </div>
         </div>
 
-        {/* Collaborations List */}
+        {/* Shares List */}
         <div className="space-y-6">
           {filteredData.length > 0 ? (
             filteredData.map((group) => (
@@ -169,10 +258,11 @@ const ViewCollaborations: React.FC = () => {
                   {group.period}
                 </h3>
                 <div className="space-y-3">
-                  {group.collaborators.map((collab) => (
+                  {group.shares.map((share) => (
                     <div
-                      key={collab.id}
-                      className="flex items-center justify-between p-4 rounded-lg"
+                      key={share.id}
+                      onClick={() => handlePresentationClick(share.presentation.id)}
+                      className="flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all hover:shadow-md"
                       style={{
                         backgroundColor: "oklch(0.98 0.01 70)",
                         border: "1px solid",
@@ -180,33 +270,42 @@ const ViewCollaborations: React.FC = () => {
                       }}
                     >
                       <div className="flex-1">
-                        <h4 className="font-medium text-sm" style={{ color: "oklch(0.145 0 0)" }}>
-                          {collab.name}
+                        <h4 className="font-medium text-sm mb-1" style={{ color: "oklch(0.145 0 0)" }}>
+                          {share.presentation.title}
                         </h4>
+                        <p className="text-xs font-light mb-1" style={{ color: "oklch(0.556 0 0)" }}>
+                          {share.presentation.description}
+                        </p>
                         <p className="text-xs font-light" style={{ color: "oklch(0.556 0 0)" }}>
-                          {collab.email}
+                          Shared by: {share.presentation.user.name} ({share.presentation.user.email})
                         </p>
                       </div>
 
                       <div className="flex items-center gap-4">
                         <span
-                          className="px-3 py-1 rounded text-xs font-medium"
+                          className="px-4 py-2.5 rounded text-xs font-medium"
                           style={{
-                            backgroundColor: getRoleColor(collab.role),
+                            backgroundColor: getRoleColor(share.accessLevel),
                             color: "white",
                           }}
                         >
-                          {collab.role}
+                          {getRoleLabel(share.accessLevel)}
                         </span>
                         <button
-                          className="p-2 rounded transition-all hover:scale-110"
+                          onClick={(e) => handleForkPresentation(e, share.presentation.id)}
+                          disabled={forkingId === share.presentation.id}
+                          className="p-2 rounded transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                           style={{
                             backgroundColor: "oklch(0.92 0.01 70)",
-                            color: "oklch(0.577 0.245 27.325)",
+                            color: "oklch(0.45 0.18 300)",
                           }}
-                          title="Remove collaborator"
+                          title="Fork presentation"
                         >
-                          <MdRemove size={16} />
+                          {forkingId === share.presentation.id ? (
+                            <span className="text-xs">...</span>
+                          ) : (
+                            <span className="text-xs font-medium">Fork</span>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -217,7 +316,7 @@ const ViewCollaborations: React.FC = () => {
           ) : (
             <div className="text-center py-12">
               <p className="text-sm font-light" style={{ color: "oklch(0.556 0 0)" }}>
-                No collaborations found for the selected period.
+                No shared presentations found for the selected period.
               </p>
             </div>
           )}

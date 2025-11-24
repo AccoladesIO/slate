@@ -6,8 +6,8 @@ import { IoAddOutline, IoPeopleOutline } from "react-icons/io5"
 import { MdClose } from "react-icons/md"
 import Layout from "@/components/Layout/Layout"
 import AddProjectForm from "@/components/ui/AddProjectForm"
-import BrowseArchive from "@/components/ui/BrowseArchive"
 import ViewCollaborations from "@/components/ui/ViewCollaborations"
+import PresentationList from "@/components/ui/PresentationList"
 
 
 type ViewType = "home" | "add-project" | "browse-archive" | "collaborations"
@@ -169,7 +169,7 @@ const Dashboard = () => {
                                 <MdClose size={18} />
                                 Back
                             </button>
-                            <BrowseArchive />
+                            <PresentationList  />
                         </div>
                     )}
 

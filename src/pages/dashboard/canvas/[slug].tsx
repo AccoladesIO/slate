@@ -1,13 +1,23 @@
 import Layout from '@/components/Layout/Layout';
 import Editor from '@/components/ui/Editor';
 import Slate from '@/components/ui/Slate';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import ActionIconsBar from '@/components/ui/ActionIconsBar';
+import { useContextValue } from '@/context/Context';
 
 const SingleCanvas = () => {
+  const { setPresentationSlug } = useContextValue() as { setPresentationSlug?: (slug: string) => void };
   const router = useRouter();
   const { slug } = router.query;
+
+    useEffect(() => {
+    if (slug && typeof slug === 'string') {
+      setPresentationSlug?.(slug);
+    }
+  }, [slug, setPresentationSlug]);
+
+
   const [leftWidth, setLeftWidth] = useState(50);
   const resizerRef = useRef<HTMLDivElement | null>(null);
   let isResizing = false;
@@ -42,7 +52,7 @@ const SingleCanvas = () => {
           style={{ borderColor: 'oklch(0.65 0.25 330 / 0.15)' }}
         >
           <h2 className="w-full text-sm font-medium" style={{ color: 'oklch(0.45 0.18 300)' }}>
-            Project Title {slug}
+            Project Title
           </h2>
 
           <div className="flex items-center gap-4">

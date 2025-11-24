@@ -17,6 +17,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js", "src/utils/hooks/Context.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js", "src/context/Context.js", "src/lib/IndexedDB.js", "src/lib/api/presentation.js", "src/context/useAuth.ts"],
   "exclude": ["node_modules"]
 }
