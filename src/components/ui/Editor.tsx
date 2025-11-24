@@ -9,28 +9,11 @@ import Quote from '@editorjs/quote';
 import Paragraph from '@editorjs/paragraph';
 import Table from '@editorjs/table';
 import CodeTool from '@editorjs/code';
-import { useContextValue } from '@/utils/hooks/Context'; // ✅ import global context
+import { useContextValue } from '@/context/Context';
 import EditorJS from '@editorjs/editorjs';
 
 const EditorComponent = () => {
-  const { editorRef } = useContextValue() as { editorRef: React.MutableRefObject<EditorJS | null> }; // ✅ use global ref
-
-  const rawDocument = {
-    time: 1550476186479,
-    blocks: [
-      {
-        data: { text: 'Document Name', level: 1 },
-        id: '123',
-        type: 'header',
-      },
-      {
-        data: { level: 4 },
-        id: '1234',
-        type: 'header',
-      },
-    ],
-    version: '2.8.1',
-  };
+  const { editorRef } = useContextValue() as { editorRef: React.MutableRefObject<EditorJS | null> };
 
   const initializeEditor = useCallback(async () => {
     const EditorJS = (await import('@editorjs/editorjs')).default;
@@ -38,7 +21,6 @@ const EditorComponent = () => {
     if (!editorRef.current) {
       editorRef.current = new EditorJS({
         autofocus: true,
-        data: rawDocument,
         holder: 'editorjs',
         tools: {
           image: SimpleImage,
@@ -72,15 +54,17 @@ const EditorComponent = () => {
               placeholder: 'Enter a header',
               shortcut: 'CMD+SHIFT+H',
               levels: [1, 2, 3, 4],
-              defaultLevel: 3,
+              defaultLevel: 2,
             },
           },
           raw: RawTool,
           code: CodeTool,
         },
       });
+
+      await editorRef.current.isReady;
     }
-  }, [editorRef, rawDocument]);
+  }, [editorRef]);
 
   useEffect(() => {
     initializeEditor();
@@ -90,7 +74,7 @@ const EditorComponent = () => {
         editorRef.current = null;
       }
     };
-  }, [initializeEditor]);
+  }, [initializeEditor, editorRef]);
 
   return <div className="w-full h-full p-4 overflow-y-scroll" id="editorjs" />;
 };

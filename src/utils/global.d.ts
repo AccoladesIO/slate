@@ -8,3 +8,4 @@ declare module '@editorjs/paragraph';
 declare module '@editorjs/table';
 declare module '@editorjs/code';
 declare module '@editorjs/header';
+declare module "@/styles/globals.css"

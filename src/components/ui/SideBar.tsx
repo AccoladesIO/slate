@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Logo from "./Logo";
 import Link from "next/link";
 import { IoCloseOutline } from "react-icons/io5";
-import { useContextValue } from "@/utils/hooks/Context";
+import { useContextValue } from "@/context/Context";
 
 interface SideBarProps {
   active: string;

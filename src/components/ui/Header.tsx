@@ -2,7 +2,7 @@ import React from 'react'
 import { CiSearch } from 'react-icons/ci'
 import Logo from './Logo'
 import { BiMenuAltLeft } from 'react-icons/bi'
-import { useContextValue } from '@/utils/hooks/Context'
+import { useContextValue } from '@/context/Context'
 import { BsSendArrowUp } from 'react-icons/bs'
 
 const Header = () => {
@@ -13,7 +13,7 @@ const Header = () => {
         <Logo />
       </div>
       <div className=' w-full outline-none border border-purple-300 rounded-3xl flex'>
-        <input type="text" className='w-full outline-none text-xs m-2' />
+        <input type="text" className='w-full outline-none text-xs m-2' placeholder='Search...' />
         <div className='flex flex-col items-center justify-center w-10 h-8 text-purple-600'>
           <CiSearch size={20} />
         </div>

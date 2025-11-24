@@ -2,26 +2,44 @@
 
 import type React from "react"
 import { useState } from "react"
+import { useContextValue } from "@/context/Context"
+import { useRouter } from "next/navigation"
 
 interface AddProjectFormProps {
   onClose: () => void
 }
 
 const AddProjectForm: React.FC<AddProjectFormProps> = ({ onClose }) => {
+  const router = useRouter()
+  const { createPresentation } = useContextValue()
+  
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (title.trim()) {
+    if (!title.trim()) {
+      setError("Title is required")
+      return
+    }
+
+    try {
+      setLoading(true)
+      setError("")
+      const presentation = await (createPresentation as (args: { title: string; description: string }) => Promise<{ id: string }>)({ title, description })
       setIsSubmitted(true)
       setTimeout(() => {
-        setTitle("")
-        setDescription("")
-        setIsSubmitted(false)
+        router.push(`/dashboard/canvas/${presentation.id}`)
         onClose()
       }, 1500)
+    } catch (err: unknown) {
+      if (err instanceof Error){
+        setError(err.message || "Failed to create presentation")
+        setLoading(false)
+      }
     }
   }
 
@@ -61,7 +79,6 @@ const AddProjectForm: React.FC<AddProjectFormProps> = ({ onClose }) => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title Field */}
             <div>
               <label className="block text-sm font-medium mb-3" style={{ color: "oklch(0.145 0 0)" }}>
                 Project Title
@@ -71,6 +88,7 @@ const AddProjectForm: React.FC<AddProjectFormProps> = ({ onClose }) => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter project title"
+                disabled={loading}
                 className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none text-sm"
                 style={{
                   borderColor: "oklch(0.92 0.01 70)",
@@ -80,7 +98,6 @@ const AddProjectForm: React.FC<AddProjectFormProps> = ({ onClose }) => {
               />
             </div>
 
-            {/* Description Field */}
             <div>
               <label className="block text-sm font-medium mb-3" style={{ color: "oklch(0.145 0 0)" }}>
                 Description
@@ -90,6 +107,7 @@ const AddProjectForm: React.FC<AddProjectFormProps> = ({ onClose }) => {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Enter project description"
                 rows={5}
+                disabled={loading}
                 className="w-full px-4 py-3 rounded-lg border transition-all focus:outline-none resize-none text-sm"
                 style={{
                   borderColor: "oklch(0.92 0.01 70)",
@@ -99,17 +117,22 @@ const AddProjectForm: React.FC<AddProjectFormProps> = ({ onClose }) => {
               />
             </div>
 
-            {/* Submit Button */}
+            {error && (
+              <div className="p-3 rounded-lg text-sm" style={{ backgroundColor: "rgba(220, 38, 38, 0.1)", color: "#dc2626" }}>
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={!title.trim()}
+              disabled={!title.trim() || loading}
               className="w-full py-3 rounded-lg font-medium transition-all duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor: "oklch(0.45 0.18 300)",
                 color: "white",
               }}
             >
-              Create Project
+              {loading ? "Creating..." : "Create Project"}
             </button>
           </form>
         )}
