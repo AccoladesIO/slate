@@ -56,7 +56,7 @@ const HeroSection: React.FC = () => {
             </button>
           </div>
 
-          <div className="pt-12 border-t border-border/30">
+          <div className="py-12 border-t border-border/30">
             <p className="text-sm text-foreground/50 mb-6">Trusted by Engineers and Students Across</p>
             <div className="flex flex-wrap justify-center gap-8 items-center opacity-60">
               {["SEES", "ULES", "GDSC UNILAG", "ECX UNILAG"].map((brand) => (
