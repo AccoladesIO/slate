@@ -53,7 +53,7 @@ export const useAuth = () => {
     }
 
     const logout = async () => {
-        await fetch(`${base}/auth/signout`, { method: 'POST', credentials: 'include' })
+        await fetch(`${base}/auth/logout`, { method: 'POST', credentials: 'include' })
         setUser(null)
         router.push("/auth/login")
     }

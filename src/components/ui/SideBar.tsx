@@ -4,6 +4,7 @@ import Logo from "./Logo";
 import Link from "next/link";
 import { IoCloseOutline } from "react-icons/io5";
 import { useContextValue } from "@/context/Context";
+import { useAuth } from "@/context/useAuth";
 
 interface SideBarProps {
   active: string;
@@ -11,9 +12,7 @@ interface SideBarProps {
 
 const SideBar: React.FC<SideBarProps> = ({ active }) => {
   const { toggleSideBar } = useContextValue()
-
-  console.log(active);
-
+  const {logout} = useAuth();
   const sideLink = [
     {
       id: 1,
@@ -43,7 +42,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
 
   return (
     <motion.div
-      className="h-[100vh] w-full max-w-[300px] absolute bg-white text-white shadow-md z-20"
+      className="fixed top-0 left-0 h-screen w-full max-w-[300px] bg-white text-black shadow-md z-20"
       initial="closed"
       animate="open"
       exit="closed"
@@ -58,7 +57,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
       <nav className="p-4 flex flex-col justify-between h-[94vh]">
         <ul className="space-y-4">
           {sideLink.map((_link, i) => (
-            <div key={_link.id + _link.name + i} className={`w-full px-4 py-2 ${active === _link.name ? ' text-purple-500 font-bold border-r-4 border-r-purple-800' : "bg-white text-black/50"} hover:bg-slate-300`}>
+            <div key={_link.id + _link.name + i} className={`w-full py-2 ${active === _link.name ? ' text-purple-500 font-bold border-r-4 border-r-purple-800' : "bg-white text-black/50"} hover:bg-slate-300`}>
               <Link href={_link.href} prefetch={false} className='w-full flex items-center justify-start gap-2 text-xs' onClick={toggleSideBar}>
                 {/* {_link.icon} */}
                 {_link.name}
@@ -66,7 +65,7 @@ const SideBar: React.FC<SideBarProps> = ({ active }) => {
             </div>
           ))}
         </ul>
-        <div className="w-full  text-purple-700 border-r-4 bg-purple-200 p-2 border-r-purple-800">Logout</div>
+        <button className="w-full  text-purple-700 border-r-4 bg-purple-200 p-2 border-r-purple-800" onClick={logout}>Logout</button>
       </nav>
     </motion.div>
   );
